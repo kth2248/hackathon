@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Claude Code 로컬 설정
+.claude/
+
+# OS
+Thumbs.db
+.DS_Store
