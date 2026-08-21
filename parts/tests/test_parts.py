@@ -9,7 +9,7 @@ import random
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _ROOT = os.path.dirname(_HERE)
-for _sub in ["pathfinding", "world", "optimization", "nlp", "models", "risk", "generation"]:
+for _sub in ["pathfinding", "world", "optimization", "nlp", "models", "risk", "generation", "gameai"]:
     sys.path.insert(0, os.path.join(_ROOT, _sub))
 
 from astar import astar, path_length
@@ -21,6 +21,7 @@ from epidemic import infect_step, counts
 from resource import reservoir_step, shortage
 from risk import risk_score
 from patterns import line_positions, spiral_positions, circle_positions, grid_positions
+from fsm import FSM
 
 
 # --- A* 경로탐색 ---------------------------------------------------------
@@ -200,6 +201,17 @@ def test_circle_positions_empty():
 
 def test_grid_positions_count():
     assert len(grid_positions(9)) == 9
+
+
+# --- FSM (게임 AI 상태기계) ----------------------------------------------
+def test_fsm_transitions():
+    ai = FSM("patrol")
+    ai.add("patrol", lambda c: c["dist"] < 3, "chase")
+    ai.add("chase", lambda c: c["dist"] > 6, "patrol")
+    assert ai.update({"dist": 10}) == "patrol"   # 멀면 순찰 유지
+    assert ai.update({"dist": 2}) == "chase"      # 가까우면 추격
+    assert ai.update({"dist": 2}) == "chase"      # 계속 추격
+    assert ai.update({"dist": 8}) == "patrol"     # 멀어지면 순찰 복귀
 
 
 if __name__ == "__main__":

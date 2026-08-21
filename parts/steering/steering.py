@@ -76,3 +76,18 @@ def flock(pos, neighbor_positions, neighbor_velocities, sep_radius=1.5, weights=
              + alignment(neighbor_velocities) * wa
              + cohesion(pos, neighbor_positions) * wc)
     return total.norm() if total.mag > 0 else vector(0, 0, 0)
+
+
+def flee(pos, threat, max_speed=1.0):
+    """위협(threat)에서 멀어지는 속도 벡터 — 게임 AI '도주' 행동."""
+    d = pos - threat
+    if d.mag == 0:
+        return vector(0, 0, 0)
+    return d.norm() * max_speed
+
+
+def pursue(pos, target_pos, target_vel, max_speed=1.0, lead=1.0):
+    """목표의 미래 위치를 예측해 앞질러 쫓는 속도 벡터 — 게임 AI '추격' 행동."""
+    future = target_pos + target_vel * lead
+    d = future - pos
+    return d.norm() * max_speed if d.mag > 0 else vector(0, 0, 0)

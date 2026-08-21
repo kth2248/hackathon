@@ -167,6 +167,13 @@
 - [ ] 육안확인: 각 실행 확인 대기
 - **→ SDG마다 서로 다른 각도 2종 확보(총 34 SDG 데모 + 별도 완성품). 시각 검증만 남음**
 
+## 5-8. 게임 프로그래밍 데모 (`products/GAME_*`) — 진로(게임 프로그래머) 어필
+- [x] 새 부품(게임 프로그래밍): `input/keyboard.py`(플레이어 입력), `gameai/fsm.py`(유한상태기계), `steering.flee/pursue`(도주/추격)
+- [x] GAME_ocean_cleanup — 바다 청소 게임(WASD 조작 + 물고기 도주 AI + 점수·타이머·재시작)
+- [x] 자동검증: 컴파일 OK + 테스트 49개(FSM 추가) 통과 + vpython cone/button API 확인
+- [ ] 육안확인: `cd products/GAME_ocean_cleanup; python main.py` (클릭 후 WASD)
+- **→ 게임 3요소(입력·상태/점수·적AI) 구현. 시각 검증만 남음**
+
 ## 6. 문서
 - [x] README.md (루트 — 전체 폴더 지도)
 - [x] parts/CATALOG.md (전체 함수 통합 인덱스) + parts/README.md (주제별 조합표)
