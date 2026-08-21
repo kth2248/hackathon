@@ -135,6 +135,18 @@
 - [ ] 육안확인: `cd products/TEMPLATE_sdg_base; python main.py` → 에이전트 랜덤워크 + 그래프
 - **→ 뼈대(템플릿). 대회장에서 복사해 주제 로직만 얹음. 육안 확인만 남음**
 
+## 5-5. SDG 기법별 데모 5종 (`products/SDG*`) — 무기고 확충
+어떤 SDG가 나와도 대응하도록 AI 기법별 완성 데모 추가. 전부 부품 조립.
+- [x] SDG11_evacuation — **A\* 경로탐색** 재난 대피(출구 개수 실험)
+- [x] SDG14_ocean_cleanup — **군집 flocking** 해양 청소 로봇(로봇 수↑ 효율↑)
+- [x] SDG03_epidemic — **SIR 모델** 전염병 확산(거리두기·백신 효과)
+- [x] SDG06_water — **자원배분+저수지** 물 분배 대시보드(트레이드오프)
+- [x] SDG15_forest_ga — **유전알고리즘** 숲 배치 최적화(세대별 개선)
+- [x] 자동검증: 5개 컴파일 OK + 부품 import OK + 테스트 48개 통과
+- [x] 부품 확장: live_graph.make_lines(다중곡선), genetic on_generation(세대 콜백)
+- [ ] 육안확인: 각 `cd products/SDG*; python main.py` (5개 실행 확인 대기)
+- **→ 실행 가능, 시각 검증만 남음**
+
 ## 6. 문서
 - [x] README.md (루트 — 전체 폴더 지도)
 - [x] parts/CATALOG.md (전체 함수 통합 인덱스) + parts/README.md (주제별 조합표)

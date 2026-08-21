@@ -12,7 +12,8 @@ import random as _random
 
 
 def genetic_optimize(create_individual, fitness, mutate,
-                     crossover=None, pop_size=30, generations=40, elite=2, rng=None):
+                     crossover=None, pop_size=30, generations=40, elite=2, rng=None,
+                     on_generation=None):
     """최적 해(individual)와 그 점수를 (best, best_fitness)로 반환.
 
     create_individual() -> individual        : 무작위 후보 해 생성
@@ -20,16 +21,20 @@ def genetic_optimize(create_individual, fitness, mutate,
     mutate(individual) -> individual         : 살짝 변형된 해
     crossover(a, b) -> individual (선택)      : 두 부모를 섞은 자식 (없으면 한 부모 복제)
     pop_size, generations, elite             : 개체수 / 세대수 / 매 세대 그대로 살릴 상위 개체수
+    on_generation(gen, best, best_fit) (선택) : 매 세대 호출 — 진행 그래프/기록용
     """
     rng = rng or _random
     pop = [create_individual() for _ in range(pop_size)]
     best, best_fit = None, float("-inf")
 
-    for _ in range(generations):
+    for _gen in range(generations):
         scored = sorted(((fitness(ind), ind) for ind in pop),
                         key=lambda t: t[0], reverse=True)
         if scored[0][0] > best_fit:
             best_fit, best = scored[0][0], scored[0][1]
+
+        if on_generation is not None:
+            on_generation(_gen, best, best_fit)
 
         survivors = [ind for _, ind in scored[:max(elite, pop_size // 2)]]
         new_pop = [ind for _, ind in scored[:elite]]          # 엘리트 보존

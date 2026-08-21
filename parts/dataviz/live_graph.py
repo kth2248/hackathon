@@ -27,3 +27,12 @@ def make_bars(title="", xtitle="x", ytitle="y", col=None, delta=0.8, width=600, 
     g = graph(title=title, xtitle=xtitle, ytitle=ytitle,
               width=width, height=height, fast=True)
     return gvbars(graph=g, color=col if col is not None else color.orange, delta=delta)
+
+
+def make_lines(title="", xtitle="x", ytitle="y", series=None, width=600, height=250):
+    """여러 곡선을 한 그래프에 그린다. series=[(라벨, 색), ...] -> gcurve 리스트 반환.
+    예: S,I,R = make_lines("감염", "시간", "인원", [("S",color.blue),("I",color.red),("R",color.gray(0.6))])
+    """
+    g = graph(title=title, xtitle=xtitle, ytitle=ytitle, width=width, height=height, fast=True)
+    series = series or [("", color.cyan)]
+    return [gcurve(graph=g, color=c, label=lbl) for lbl, c in series]

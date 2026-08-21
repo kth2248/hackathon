@@ -76,6 +76,19 @@ def test_genetic_finds_optimum():
     assert fit > -0.25
 
 
+def test_genetic_on_generation_callback():
+    rng = random.Random(1)
+    seen = []
+    genetic_optimize(
+        create_individual=lambda: rng.uniform(-5, 5),
+        fitness=lambda x: -(x * x),
+        mutate=lambda x: x + rng.uniform(-0.3, 0.3),
+        pop_size=10, generations=12, rng=rng,
+        on_generation=lambda gen, best, fit: seen.append(gen),
+    )
+    assert len(seen) == 12          # 세대마다 콜백 호출
+
+
 # --- 자원 배분 -----------------------------------------------------------
 def test_proportional_allocate_sums_to_total():
     alloc = proportional_allocate(100, [1, 2, 2])
