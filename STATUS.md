@@ -174,6 +174,13 @@
 - [ ] 육안확인: `cd products/GAME_ocean_cleanup; python main.py` (클릭 후 WASD)
 - **→ 게임 3요소(입력·상태/점수·적AI) 구현. 시각 검증만 남음**
 
+## 5-9. 게임+AI+SDG 통합 게임 (`products/GAME_*`)
+- [x] GAME_ocean_cleanup — 바다 청소(WASD + 도주 AI + SDG14)
+- [x] GAME_eco_defense — 에코 타워디펜스(마우스 배치 + **A\* 우회** + 타워 조준 + 웨이브/경제 + SDG7·11·13)
+- [x] 자동검증: 컴파일 OK + A* 우회 로직 검증(타워로 막으면 몬스터가 돌아감)
+- [ ] 육안확인: `cd products/GAME_eco_defense; python main.py` (칸 클릭해 타워 설치)
+- **→ 게임+AI+SDG를 한 번에 담은 대표 통합 게임. 시각 검증만 남음**
+
 ## 6. 문서
 - [x] README.md (루트 — 전체 폴더 지도)
 - [x] parts/CATALOG.md (전체 함수 통합 인덱스) + parts/README.md (주제별 조합표)
