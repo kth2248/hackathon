@@ -39,6 +39,7 @@ OBSTACLES = [(vector(0, 0, 0), 1.5),
 AVOID_MARGIN = 1.6          # 이 거리 안에 들어오면 밀려남
 
 num_robots = NUM_ROBOTS
+sep_range = 1.0             # 로봇끼리 서로 밀어내는(충돌 회피) 범위 — 슬라이더로 조절
 
 # ============================================================
 # 2. 씬
@@ -57,7 +58,13 @@ def on_robots(v):
     reset()
 
 
+def on_sep(v):
+    global sep_range
+    sep_range = v
+
+
 make_labeled_slider(1, 12, NUM_ROBOTS, on_robots, "로봇 수", length=300, decimals=0)
+make_labeled_slider(0.5, 4.0, sep_range, on_sep, "충돌 회피 범위(로봇 간격)", length=300, decimals=1)
 remaining_curve = make_line_curve("남은 플라스틱", "시간", "개수", col=color.red)
 
 robots = []      # {obj, vel}
@@ -114,13 +121,14 @@ while True:
     for i, r in enumerate(robots):
         pos = r["obj"].pos
 
-        # 이웃 로봇으로 군집 방향(주로 충돌 방지용 분리 위주)
+        # 이웃 로봇으로 군집 방향(충돌 회피 범위는 슬라이더로 조절)
+        perceive = max(NEIGHBOR_R, sep_range)
         nbr_pos, nbr_vel = [], []
         for j, other in enumerate(robots):
-            if j != i and (other["obj"].pos - pos).mag < NEIGHBOR_R:
+            if j != i and (other["obj"].pos - pos).mag < perceive:
                 nbr_pos.append(other["obj"].pos)
                 nbr_vel.append(other["vel"])
-        flock_dir = flock(pos, nbr_pos, nbr_vel, sep_radius=1.0, weights=(2.0, 0.3, 0.2))
+        flock_dir = flock(pos, nbr_pos, nbr_vel, sep_radius=sep_range, weights=(2.0, 0.3, 0.2))
 
         # 작업 분담: 아직 아무도 안 맡은 '가장 가까운' 플라스틱을 이 로봇이 맡는다
         target = None
