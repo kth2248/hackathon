@@ -181,6 +181,14 @@
 - [ ] 육안확인: `cd products/GAME_eco_defense; python main.py` (칸 클릭해 타워 설치)
 - **→ 게임+AI+SDG를 한 번에 담은 대표 통합 게임. 시각 검증만 남음**
 
+## 5-10. 데이터 분석형 (주최측 예시 부합) (`products/DATA_*`)
+주최측 예시가 "데이터 추세 비교"(3D 아님) → 실제 데이터 그래프 분석 카드 추가.
+- [x] 새 부품: `parts/stats/stats.py` (pearson 상관계수, minmax_scale 정규화) + 테스트
+- [x] DATA_co2_vs_temp — CO2 vs 기온 추세 겹쳐 그리기 + 산점도 + 상관계수(r≈0.98), CSV 기반(오프라인)
+- [x] 자동검증: 컴파일 OK + 테스트 52개 + CSV 로드/상관 확인
+- [ ] 육안확인: `cd products/DATA_co2_vs_temp; python main.py`
+- **→ 주최 요구 스타일에 정면 부합. 3D 시뮬(임팩트)과 병행 카드.**
+
 ## 6. 문서
 - [x] README.md (루트 — 전체 폴더 지도)
 - [x] parts/CATALOG.md (전체 함수 통합 인덱스) + parts/README.md (주제별 조합표)

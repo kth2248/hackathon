@@ -9,7 +9,7 @@ import random
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _ROOT = os.path.dirname(_HERE)
-for _sub in ["pathfinding", "world", "optimization", "nlp", "models", "risk", "generation", "gameai"]:
+for _sub in ["pathfinding", "world", "optimization", "nlp", "models", "risk", "generation", "gameai", "stats"]:
     sys.path.insert(0, os.path.join(_ROOT, _sub))
 
 from astar import astar, path_length
@@ -22,6 +22,7 @@ from resource import reservoir_step, shortage
 from risk import risk_score
 from patterns import line_positions, spiral_positions, circle_positions, grid_positions
 from fsm import FSM
+from stats import pearson, minmax_scale
 
 
 # --- A* 경로탐색 ---------------------------------------------------------
@@ -212,6 +213,20 @@ def test_fsm_transitions():
     assert ai.update({"dist": 2}) == "chase"      # 가까우면 추격
     assert ai.update({"dist": 2}) == "chase"      # 계속 추격
     assert ai.update({"dist": 8}) == "patrol"     # 멀어지면 순찰 복귀
+
+
+# --- 통계(데이터 분석) --------------------------------------------------
+def test_pearson_perfect_positive():
+    assert abs(pearson([1, 2, 3, 4], [2, 4, 6, 8]) - 1.0) < 1e-9
+
+
+def test_pearson_negative():
+    assert pearson([1, 2, 3], [3, 2, 1]) < -0.99
+
+
+def test_minmax_scale_endpoints():
+    s = minmax_scale([10, 20, 30])
+    assert s[0] == 0.0 and s[-1] == 100.0
 
 
 if __name__ == "__main__":
