@@ -1,8 +1,8 @@
 # SDG14_ocean_cleanup/main.py — 해양 청소 로봇 함대
-#   군집(flocking) + 작업 분담 + 장애물(배·부표) 회피 + 조류에 떠다니는 쓰레기
+#   군집(flocking) + 작업 분담 + 장애물(배·부표) 회피 + 각자 무작위로 떠다니는 쓰레기
 #
 # SDG 14(해양) + 12(폐기물). 청소로봇들이 무리 규칙을 지키며 '서로 다른' 쓰레기를 나눠 맡아
-# 수거하고, 배와 부표는 피해 간다. 쓰레기는 조류를 따라 천천히 떠다닌다.
+# 수거하고, 배와 부표는 피해 간다. 쓰레기는 각자 무작위 방향으로 떠다니며 벽에서 튕긴다.
 #
 # 실행: python main.py
 
@@ -25,20 +25,20 @@ from live_graph import make_line_curve
 # ============================================================
 # 1. 설정
 # ============================================================
-AREA = 10.0
+AREA = 16.0                 # 바다 크기(넓게)
 NUM_ROBOTS = 6
-NUM_PLASTIC = 40
+NUM_PLASTIC = 70
 ROBOT_SPEED = 0.12
 COLLECT_R = 0.6
 NEIGHBOR_R = 2.5
 ROBOT_R = 0.35
 AVOID_MARGIN = 1.6          # 장애물에 이만큼 가까우면 밀려남
-DRIFT = 0.02                # 쓰레기가 조류에 떠다니는 세기
+DRIFT = 0.03                # 쓰레기가 떠다니는 속도
 
 # 장애물: (중심, 반지름, 종류) — 종류 "ship"=배, "buoy"=부표
 OBSTACLES = [(vector(0, 0, 0), 1.5, "ship"),
-             (vector(5.5, 0, -4.5), 1.0, "buoy"),
-             (vector(-5.5, 0, 4.5), 1.0, "buoy")]
+             (vector(8, 0, -6), 1.0, "buoy"),
+             (vector(-8, 0, 6), 1.0, "buoy")]
 
 num_robots = NUM_ROBOTS
 sep_range = 1.0
@@ -48,6 +48,11 @@ sep_range = 1.0
 # ============================================================
 scene = make_scene("SDG14 — 군집 AI 해양 청소 로봇", width=900, height=560)
 scene.append_to_caption("<b>로봇들이 협력해 떠다니는 쓰레기를 나눠 수거(배·부표는 회피)</b>\n\n")
+# 시작할 때 위에서 내려다보는 시점(탑다운)
+scene.center = vector(0, 0, 0)
+scene.forward = vector(0, -1, 0.0001)
+scene.up = vector(0, 0, -1)
+scene.range = AREA * 1.15
 box(pos=vector(0, -0.6, 0), size=vector(2 * AREA, 0.2, 2 * AREA), color=vector(0.1, 0.3, 0.5))  # 바다
 
 
@@ -109,7 +114,8 @@ def reset():
         pos = rand_pos()
         pos.y = 0.18
         plastics.append({"obj": sphere(pos=pos, radius=0.18, color=color.orange),
-                         "vel": vector(0, 0, 0), "phase": random.uniform(0, 6.28)})
+                         "vel": vector(random.uniform(-1, 1), 0, random.uniform(-1, 1)).norm() * DRIFT,
+                         "phase": random.uniform(0, 6.28)})
     t = 0
 
 
@@ -145,12 +151,17 @@ while True:
     rate(30)
     t += 1
 
-    # 3-0. 쓰레기가 조류를 따라 천천히 떠다니고 물결에 바동거림
-    current = vector(math.cos(t * 0.008), 0, math.sin(t * 0.008))   # 완만히 도는 조류
+    # 3-0. 쓰레기가 '각자 무작위 방향'으로 떠다니고, 벽에 닿으면 튕기며, 물결에 바동거림
     for p in plastics:
-        p["vel"] = p["vel"] * 0.9 + (current * DRIFT
-                                     + vector(random.uniform(-1, 1), 0, random.uniform(-1, 1)) * 0.006)
+        # 방향을 살짝 무작위로 틀되 속도는 DRIFT로 제한 → 각 쓰레기가 독립적으로 움직임
+        p["vel"] = p["vel"] + vector(random.uniform(-1, 1), 0, random.uniform(-1, 1)) * 0.006
+        if p["vel"].mag > DRIFT:
+            p["vel"] = p["vel"].norm() * DRIFT
         np = p["obj"].pos + p["vel"]
+        if abs(np.x) > AREA:
+            p["vel"].x *= -1        # 벽에서 튕김
+        if abs(np.z) > AREA:
+            p["vel"].z *= -1
         np.x = max(-AREA, min(AREA, np.x))
         np.z = max(-AREA, min(AREA, np.z))
         np = push_out(np)
